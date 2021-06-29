@@ -1,4 +1,4 @@
-const { Mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const Project = require('../models/Projects');
 
 exports.newProject = async (req, res) => {
@@ -21,12 +21,13 @@ exports.newProject = async (req, res) => {
     }
 }
 
-exports.getAllProjects = async (res) => {
+exports.getAllProjects = async (req, res) => {
     try {
         const projects = await Project.find();
         const data = [];
         projects.forEach((project) => {
             data.push({
+                id: project._id,
                 title: project.title,
                 comments: project.comments.length
             });
@@ -49,8 +50,9 @@ exports.getProject = async (req, res) => {
         return res.status(200).json({
             message: 'successfully retrieved project',
             project: {
+                id: project._id,
                 title: project.title,
-                comments: project.comments.length
+                comments: project.comments
             }
         });
 
@@ -65,14 +67,12 @@ exports.postComment = async (req, res) => {
     }
 
     try {
-        await new Project.findByIdAndUpdate(req.params.id, {
+        await Project.findByIdAndUpdate(req.params.id,  { $push: {
             comments: {
-                comment:{
-                    comment_id: Mongoose.Types.ObjectId,
-                    content: req.body.comment, 
-                } 
+                    comment_id: mongoose.Types.ObjectId(),
+                    comment: req.body.comment, 
             },
-        }, { new: true }
+        }}, { new: true }
         );
         return res.status(201).json({
             message: 'successfully posted comment'
