@@ -75,7 +75,7 @@ exports.postComment = async (req, res) => {
         }}, { new: true }
         );
         return res.status(201).json({
-            message: 'successfully posted comment'
+            message: 'successfully posted comment',
         });
     } catch(err) {
         return res.status(500).json({error: err.message});
