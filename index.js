@@ -19,6 +19,6 @@ mongoose.connect(dbConfig.db_url, {
 
 app.use(router)
 
-app.listen(3000, () => 
+app.listen(process.env.PORT || 3000, () => 
     console.log('app running on localhost', 3000)
 );
